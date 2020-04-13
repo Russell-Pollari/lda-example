@@ -4,6 +4,16 @@ Here we are going to apply LDA to the Dataset “Sample_Data_IEGKC.xlsx” and s
 
 Dataset “Sample_Data_IEGKC.xlsx”* contains a text column with paragraphs on lessons learned from IEG’s Project Performance Assessment Reports (PPARs), along with country and sector information.
 
+Loading gensim and nltk libraries
+
+Steps for Data Pre-processing
+
+Tokenization: Split the text into sentences and the sentences into words. Lowercase the words and remove punctuation.
+Words that have fewer than 3 characters are removed.
+All stopwords are removed.
+Words are lemmatized — words in third person are changed to first person and verbs in past and future tenses are changed into present.
+Words are stemmed — words are reduced to their root form.
+
 The model we are using is TF_IDF that weights the words in the sentence based on their frequency and rank them accordingly. 
 
-Results are a list of topics for each paragraph with their corresponding probability. 
+Results is the topic distribution for the whole document. Each element in the list is a pair of a topic’s id, and the probability that was assigned to it.
