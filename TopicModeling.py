@@ -104,8 +104,13 @@ data.to_excel(writer, sheet_name='Sheet1')
 writer.save()
     
 #Visualize Topics
-countries=data.groupby(['Countries']).Topic_Name
-countries.plot.bar()
+data.groupby(['Countries','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
+plt.show()
+
+#Plot Sectors
+data.groupby(['Sectors','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
+plt.show()
+
 #matplotlib inline
 #import pyLDAvis
 #import pyLDAvis.gensim
