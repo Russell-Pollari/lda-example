@@ -14,11 +14,13 @@ from gensim.parsing.preprocessing import STOPWORDS
 from nltk.stem import WordNetLemmatizer, SnowballStemmer
 from nltk.stem.porter import *
 import numpy as np
-np.random.seed(2018)
 import nltk
-nltk.download('wordnet')
 from gensim import corpora, models
 import matplotlib.pyplot as plt
+
+
+nltk.download('wordnet')
+np.random.seed(2018)
 
 
 #Reading Data in to DAtaframe
@@ -48,7 +50,7 @@ dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
 #TF-IDF Model
-tfidf = models.TfidfModel(bow_corpus)   
+tfidf = models.TfidfModel(bow_corpus)
 corpus_tfidf = tfidf[bow_corpus]
 
 #Running LDA using Bag of Words
@@ -57,7 +59,7 @@ lda_model = gensim.models.LdaMulticore(bow_corpus, num_topics=5, id2word=diction
 #Topics generated:
 for idx, topic in lda_model.print_topics(-1):
     print('Topic: {} \nWords: {}'.format(idx, topic))
-    
+
 #Running LDA using TF-IDF
 lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=5, id2word=dictionary, passes=2, workers=4)
 
@@ -65,21 +67,21 @@ lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=5, id2word
 for idx, topic in lda_model_tfidf.print_topics(-1):
     print('Topic: {} Word: {}'.format(idx, topic))
 
-topic_label = {0: 'Government', 1: 'Public Health', 2: 'Financial Planning', 3: 'Water Sector', 4: 'Policy Implementation'} 
+topic_label = {0: 'Government', 1: 'Public Health', 2: 'Financial Planning', 3: 'Water Sector', 4: 'Policy Implementation'}
 print(topic_label)
-    
+
 #doc_label = topic_label[i]
-    
+
 #for index, score in sorted(lda_model[bow_corpus[1]], key=lambda tup: -1*tup[1]):
 #    print("\nScore: {}\t \nTopic: {}".format(score, lda_model.print_topic(index, 5)))
 
 #Performance evaluation by classifying sample document using LDA TF-IDF model
 #for index, score in sorted(lda_model_tfidf[bow_corpus[1]], key=lambda tup: -1*tup[1]):
-#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model_tfidf.print_topic(index, 5)))  
+#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model_tfidf.print_topic(index, 5)))
 
 topics_doc=[]
 for doc in bow_corpus:
-    topics_doc.append(lda_model_tfidf.get_document_topics(doc, minimum_probability=0.02, minimum_phi_value=None, per_word_topics=False))   
+    topics_doc.append(lda_model_tfidf.get_document_topics(doc, minimum_probability=0.02, minimum_phi_value=None, per_word_topics=False))
 
 data['Topic_ID_Prob']=topics_doc
 
@@ -102,7 +104,7 @@ writer = pd.ExcelWriter('new_file_topics.xlsx', engine='xlsxwriter')
 data.to_excel(writer, sheet_name='Sheet1')
 # Close the Pandas Excel writer and output the Excel file.
 writer.save()
-    
+
 #Visualize Topics
 data.groupby(['Countries','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
 plt.show()
