@@ -16,4 +16,6 @@ Words are stemmed — words are reduced to their root form.
 
 The model we are using is TF_IDF that weights the words in the sentence based on their frequency and rank them accordingly. 
 
-Results is the topic distribution for the whole document. Each element in the list is a pair of a topic’s id, and the probability that was assigned to it.
+Results is the topic distribution for the whole document. Each element in the list is a pair of a topic’s id, and the probability that was assigned to it. I set the minimum probability to 0.02 so that we have the more probable topics. 
+
+Then it is our manual task to interpret the meaning of each topic ourself and label the topic numbers. 
