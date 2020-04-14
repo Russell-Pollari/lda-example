@@ -16,13 +16,13 @@ Words are stemmed — words are reduced to their root form.
 
 The model we are using is TF_IDF that weights the words in the sentence based on their frequency and rank them accordingly. 
 
-Results is printing in a #new_file_topics.xlsx, which demonstrates the topic distribution for the whole document. Each element in the list of 4th column is a pair of a topic’s id, and the probability that was assigned to it. I set the minimum probability to 0.02 so that we have the more probable topics. 
+## Results
+Results are printing in a #new_file_topics.xlsx, which demonstrates the topic distribution for the whole document. Each element in the list of 4th column is a pair of a topic’s id, and the probability that was assigned to it. I set the minimum probability to 0.02 so that we have the more probable topics. 
 
 Then it is our manual task to interpret the meaning of each topic ourself and label the topic numbers. 
 
+After running the model we get 5 topics for the whole documents which are interpreted through 10 main words coming out of the model. These 5 Topics are the closest approximation of abstract model I could get from those words but can be improved based on more knowledge from the context. 
 
-## Results
-After running the model we get 5 topics for the whole documents which are interpreted through 10 main words coming out of the model. These 5 Topics are the closes approximation of abstract model I could get from those words but can be improved based on more knowledge from the context. 
 Topic 0: 'Government' 
 Topic 1: 'Public Health'
 Topic 2: 'Financial Planning'
