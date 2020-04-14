@@ -57,13 +57,6 @@ bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 tfidf = models.TfidfModel(bow_corpus)
 corpus_tfidf = tfidf[bow_corpus]
 
-#Running LDA using Bag of Words
-lda_model = gensim.models.LdaMulticore(bow_corpus, num_topics=5, id2word=dictionary, passes=2, workers=2)
-
-#Topics generated:
-for idx, topic in lda_model.print_topics(-1):
-    print('Topic: {} \nWords: {}'.format(idx, topic))
-
 #Running LDA using TF-IDF
 lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=5, id2word=dictionary, passes=2, workers=4)
 
@@ -73,15 +66,6 @@ for idx, topic in lda_model_tfidf.print_topics(-1):
 
 topic_label = {0: 'Government', 1: 'Public Health', 2: 'Financial Planning', 3: 'Water Sector', 4: 'Policy Implementation'}
 print(topic_label)
-
-#doc_label = topic_label[i]
-
-#for index, score in sorted(lda_model[bow_corpus[1]], key=lambda tup: -1*tup[1]):
-#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model.print_topic(index, 5)))
-
-#Performance evaluation by classifying sample document using LDA TF-IDF model
-#for index, score in sorted(lda_model_tfidf[bow_corpus[1]], key=lambda tup: -1*tup[1]):
-#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model_tfidf.print_topic(index, 5)))
 
 topics_doc=[]
 for doc in bow_corpus:
@@ -94,13 +78,6 @@ for i in range(size(data['Topic_ID_Prob'])):
     topic_name.append(topic_label[data['Topic_ID_Prob'][i][0][0]])
 data['Topic_Name']=topic_name
 
-#Testing model on unseen document
-#unseen_document = 'How a Pentagon deal became an identity crisis for Google'
-#unseen_document = data_text
-#bow_vector = dictionary.doc2bow(preprocess(unseen_document))
-
-#for index, score in sorted(lda_model[bow_vector], key=lambda tup: -1*tup[1]):
-#    print("Score: {}\t Topic: {}".format(score, lda_model.print_topic(index, 5)))
 
 # Create a Pandas Excel writer using XlsxWriter as the engine.
 writer = pd.ExcelWriter('new_file_topics.xlsx', engine='xlsxwriter')
@@ -116,10 +93,3 @@ plt.show()
 #Plot Sectors
 data.groupby(['Sectors','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
 plt.show()
-
-#matplotlib inline
-#import pyLDAvis
-#import pyLDAvis.gensim
-#vis = pyLDAvis.gensim.prepare(topic_model=lda_model, corpus=corpus, dictionary=dictionary_LDA)
-#pyLDAvis.enable_notebook()
-#pyLDAvis.display(vis)
