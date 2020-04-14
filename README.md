@@ -20,5 +20,6 @@ Results is the topic distribution for the whole document. Each element in the li
 
 Then it is our manual task to interpret the meaning of each topic ourself and label the topic numbers. 
 
-# Before Running the Program: 
-Please run pip install -r requirements.txt in your terminal first. This will run all the required libraries for the code. 
+## Before Running the Program: 
+
+Please run "pip install -r requirements.txt" in your terminal first. This will run all the required libraries for the code. 
