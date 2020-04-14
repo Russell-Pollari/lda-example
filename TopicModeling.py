@@ -104,15 +104,15 @@ def main(filename):
     data['Topic_ID_Prob'] = topics_doc
     data['Topic_Name'] = topic_names
 
-    save_data(data, 'output.xlsx')
+    save_data(data, save_as='new_file_topics.xlsx')
 
     # Visualize Topics
     data.groupby(['Countries', 'Topic_Name']).size().unstack().plot(kind='bar', stacked=True)
-    plt.show()
+    plt.savefig('Countries.png')
 
     # Plot Sectors
     data.groupby(['Sectors', 'Topic_Name']).size().unstack().plot(kind='bar', stacked=True)
-    plt.show()
+    plt.savefig('Sectors.png')
 
 
 if __name__ == '__main__':
