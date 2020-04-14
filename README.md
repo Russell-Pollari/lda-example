@@ -4,6 +4,14 @@ Here we are going to apply LDA to the Dataset “Sample_Data_IEGKC.xlsx” and s
 
 Dataset “Sample_Data_IEGKC.xlsx”* contains a text column with paragraphs on lessons learned from IEG’s Project Performance Assessment Reports (PPARs), along with country and sector information.
 
+## Code
+The code that runs the model is in TopicModeling.py
+
+## Before Running the Program: 
+
+Please run "pip install -r requirements.txt" in your terminal first. This will run all the required libraries for the code. 
+
+## Methodology
 Loading gensim and nltk libraries
 
 Steps for Data Pre-processing
@@ -28,7 +36,4 @@ Topic 2: 'Financial Planning'
 Topic 3: 'Water Sector' 
 Topic 4: 'Policy Implementation'
 
-## Before Running the Program: 
-
-Please run "pip install -r requirements.txt" in your terminal first. This will run all the required libraries for the code. 
-
+Graphs are plotted based on the Countries and Sectors. However, due to the big number of countries and sectors, the x axis is abit crowded which can be modified by clustering those or other methods of visualization.
