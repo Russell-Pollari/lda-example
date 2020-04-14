@@ -20,12 +20,12 @@ nltk.download('wordnet')
 np.random.seed(2018)
 
 
-#Reading Data in to DAtaframe
-#Data Path
-data = pd.read_excel('/Users/minaekramnia/Downloads/SampleData_IEGKC_DS_STC_Test.xlsx')
-data_text = data[['Pragraph']]
-data_text['index'] = data_text.index
-documents = data_text
+def load_data(filename):
+    '''
+    Load excel file into Dataframe
+    '''
+    data = pd.read_excel(filename)
+    return data
 
 
 def lemmatize_stemming(text):
@@ -39,7 +39,11 @@ def preprocess(text):
             result.append(lemmatize_stemming(token))
     return result
 
-processed_docs = documents['Pragraph'].map(preprocess)
+
+filename = '/Users/minaekramnia/Downloads/SampleData_IEGKC_DS_STC_Test.xlsx'
+data = load_data(filename)
+
+processed_docs = data['Pragraph'].map(preprocess)
 
 #Bag of words on the dataset
 #creating a dic that convert indexes into words
