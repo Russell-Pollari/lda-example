@@ -11,12 +11,9 @@ import gensim
 from nltk.stem import WordNetLemmatizer
 from nltk.stem.porter import PorterStemmer
 import numpy as np
-import nltk
 from gensim import models
 import matplotlib.pyplot as plt
 
-
-nltk.download('wordnet')
 np.random.seed(2018)
 
 
