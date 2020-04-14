@@ -7,15 +7,12 @@ Created on Sun Apr 12 13:25:18 2020
 """
 
 import pandas as pd
-from pandas import read_excel
 import gensim
-from gensim.utils import simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
-from nltk.stem import WordNetLemmatizer, SnowballStemmer
-from nltk.stem.porter import *
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import stemmer
 import numpy as np
 import nltk
-from gensim import corpora, models
+from gensim import models
 import matplotlib.pyplot as plt
 
 
@@ -30,8 +27,10 @@ data_text = data[['Pragraph']]
 data_text['index'] = data_text.index
 documents = data_text
 
+
 def lemmatize_stemming(text):
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
+
 
 def preprocess(text):
     result = []
