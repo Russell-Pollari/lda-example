@@ -20,6 +20,16 @@ Results is the topic distribution for the whole document. Each element in the li
 
 Then it is our manual task to interpret the meaning of each topic ourself and label the topic numbers. 
 
+
+## Results
+After running the model we get 5 topics for the whole documents which are interpreted through 10 main words coming out of the model. These 5 Topics are the closes approximation of abstract model I could get from those words but can be improved based on more knowledge from the context. 
+Topic 0: 'Government' 
+Topic 1: 'Public Health'
+Topic 2: 'Financial Planning'
+Topic 3: 'Water Sector' 
+Topic 4: 'Policy Implementation'
+
 ## Before Running the Program: 
 
 Please run "pip install -r requirements.txt" in your terminal first. This will run all the required libraries for the code. 
+
