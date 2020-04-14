@@ -19,3 +19,6 @@ The model we are using is TF_IDF that weights the words in the sentence based on
 Results is the topic distribution for the whole document. Each element in the list is a pair of a topic’s id, and the probability that was assigned to it. I set the minimum probability to 0.02 so that we have the more probable topics. 
 
 Then it is our manual task to interpret the meaning of each topic ourself and label the topic numbers. 
+
+# Before Running the Program: 
+Please run pip install -r requirements.txt in your terminal first. This will run all the required libraries for the code. 
