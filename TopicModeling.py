@@ -18,6 +18,8 @@ np.random.seed(2018)
 import nltk
 nltk.download('wordnet')
 from gensim import corpora, models
+import matplotlib.pyplot as plt
+
 
 #Reading Data in to DAtaframe
 #Data Path
@@ -65,7 +67,7 @@ for idx, topic in lda_model_tfidf.print_topics(-1):
 
 topic_label = {0: 'Government', 1: 'Public Health', 2: 'Financial Planning', 3: 'Water Sector', 4: 'Policy Implementation'} 
 print(topic_label)
-
+    
 #doc_label = topic_label[i]
     
 #for index, score in sorted(lda_model[bow_corpus[1]], key=lambda tup: -1*tup[1]):
@@ -79,8 +81,13 @@ topics_doc=[]
 for doc in bow_corpus:
     topics_doc.append(lda_model_tfidf.get_document_topics(doc, minimum_probability=0.02, minimum_phi_value=None, per_word_topics=False))   
 
-data['Topics']=topics_doc
-    
+data['Topic_ID_Prob']=topics_doc
+
+topic_name=[]
+for i in range(size(data['Topics_ID_Prob'])):
+    topic_name.append(topic_label[data['Topics_ID_Prob'][i][0][0]])
+data['Topic_Name']=topic_name
+
 #Testing model on unseen document
 #unseen_document = 'How a Pentagon deal became an identity crisis for Google'
 #unseen_document = data_text
@@ -91,14 +98,14 @@ data['Topics']=topics_doc
 
 # Create a Pandas Excel writer using XlsxWriter as the engine.
 writer = pd.ExcelWriter('new_file_topics.xlsx', engine='xlsxwriter')
-
 # Convert the dataframe to an XlsxWriter Excel object.
 data.to_excel(writer, sheet_name='Sheet1')
-
 # Close the Pandas Excel writer and output the Excel file.
 writer.save()
     
 #Visualize Topics
+countries=data.groupby(['Countries']).Topic_Name
+countries.plot.bar()
 #matplotlib inline
 #import pyLDAvis
 #import pyLDAvis.gensim
