@@ -7,113 +7,111 @@ Created on Sun Apr 12 13:25:18 2020
 """
 
 import pandas as pd
-from pandas import read_excel
 import gensim
-from gensim.utils import simple_preprocess
-from gensim.parsing.preprocessing import STOPWORDS
-from nltk.stem import WordNetLemmatizer, SnowballStemmer
-from nltk.stem.porter import *
+from nltk.stem import WordNetLemmatizer
+from nltk.stem.porter import PorterStemmer
 import numpy as np
-np.random.seed(2018)
-import nltk
-nltk.download('wordnet')
-from gensim import corpora, models
+from gensim import models
 import matplotlib.pyplot as plt
 
+np.random.seed(2018)
 
-#Reading Data in to DAtaframe
-#Data Path
-data = pd.read_excel('/Users/minaekramnia/Downloads/SampleData_IEGKC_DS_STC_Test.xlsx')
-data_text = data[['Pragraph']]
-data_text['index'] = data_text.index
-documents = data_text
+
+def load_data(filename):
+    '''
+    Load excel file into Dataframe
+    '''
+    data = pd.read_excel(filename)
+    return data
+
 
 def lemmatize_stemming(text):
+    stemmer = PorterStemmer()
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
+
 def preprocess(text):
+    stopwords = gensim.parsing.preprocessing.STOPWORDS
     result = []
     for token in gensim.utils.simple_preprocess(text):
-        if token not in gensim.parsing.preprocessing.STOPWORDS and len(token) > 3:
+        if token not in stopwords and len(token) > 3:
             result.append(lemmatize_stemming(token))
     return result
 
-processed_docs = documents['Pragraph'].map(preprocess)
 
-#Bag of words on the dataset
-#creating a dic that convert indexes into words
-dictionary = gensim.corpora.Dictionary(processed_docs)
-dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
-#each word has an index - looping through each doc, converting into bow representation
-bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
+def print_topics(lda_model):
+    '''
+    Print the words in each topic created with lda_model
+    '''
+    for idx, topic in lda_model.print_topics(-1):
+        print('Topic: {} Word: {}'.format(idx, topic))
 
-#TF-IDF Model
-tfidf = models.TfidfModel(bow_corpus)   
-corpus_tfidf = tfidf[bow_corpus]
 
-#Running LDA using Bag of Words
-lda_model = gensim.models.LdaMulticore(bow_corpus, num_topics=5, id2word=dictionary, passes=2, workers=2)
+def save_data(dataframe, save_as='new_file_topics.xlxs'):
+    '''
+    Save dataframe as save_as
+    '''
+    with pd.ExcelWriter(save_as, engine='xlsxwriter') as writer:
+        dataframe.to_excel(writer, sheet_name='Sheet1')
 
-#Topics generated:
-for idx, topic in lda_model.print_topics(-1):
-    print('Topic: {} \nWords: {}'.format(idx, topic))
-    
-#Running LDA using TF-IDF
-lda_model_tfidf = gensim.models.LdaMulticore(corpus_tfidf, num_topics=5, id2word=dictionary, passes=2, workers=4)
 
-#Topics generated_TF-IDF
-for idx, topic in lda_model_tfidf.print_topics(-1):
-    print('Topic: {} Word: {}'.format(idx, topic))
+def main(filename):
+    data = load_data(filename)
+    processed_docs = data['Pragraph'].map(preprocess)
 
-topic_label = {0: 'Government', 1: 'Public Health', 2: 'Financial Planning', 3: 'Water Sector', 4: 'Policy Implementation'} 
-print(topic_label)
-    
-#doc_label = topic_label[i]
-    
-#for index, score in sorted(lda_model[bow_corpus[1]], key=lambda tup: -1*tup[1]):
-#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model.print_topic(index, 5)))
+    dictionary = gensim.corpora.Dictionary(processed_docs)
+    dictionary.filter_extremes(no_below=15, no_above=0.5, keep_n=100000)
 
-#Performance evaluation by classifying sample document using LDA TF-IDF model
-#for index, score in sorted(lda_model_tfidf[bow_corpus[1]], key=lambda tup: -1*tup[1]):
-#    print("\nScore: {}\t \nTopic: {}".format(score, lda_model_tfidf.print_topic(index, 5)))  
+    bow_corpus = [dictionary.doc2bow(doc) for doc in processed_docs]
 
-topics_doc=[]
-for doc in bow_corpus:
-    topics_doc.append(lda_model_tfidf.get_document_topics(doc, minimum_probability=0.02, minimum_phi_value=None, per_word_topics=False))   
+    tfidf = models.TfidfModel(bow_corpus)
+    corpus_tfidf = tfidf[bow_corpus]
 
-data['Topic_ID_Prob']=topics_doc
+    lda_model_tfidf = gensim.models.LdaMulticore(
+        corpus_tfidf,
+        num_topics=5,
+        id2word=dictionary,
+        passes=2,
+        workers=4
+    )
 
-topic_name=[]
-for i in range(size(data['Topic_ID_Prob'])):
-    topic_name.append(topic_label[data['Topic_ID_Prob'][i][0][0]])
-data['Topic_Name']=topic_name
+    print_topics(lda_model_tfidf)
 
-#Testing model on unseen document
-#unseen_document = 'How a Pentagon deal became an identity crisis for Google'
-#unseen_document = data_text
-#bow_vector = dictionary.doc2bow(preprocess(unseen_document))
+    topic_label_map = {
+        0: 'Government',
+        1: 'Public Health',
+        2: 'Financial Planning',
+        3: 'Water Sector',
+        4: 'Policy Implementation'
+    }
 
-#for index, score in sorted(lda_model[bow_vector], key=lambda tup: -1*tup[1]):
-#    print("Score: {}\t Topic: {}".format(score, lda_model.print_topic(index, 5)))
+    topics_doc = []
+    topic_names = []
+    for doc in bow_corpus:
+        topics = lda_model_tfidf.get_document_topics(
+            doc,
+            minimum_probability=0.02,
+            minimum_phi_value=None,
+            per_word_topics=False
+        )
+        topic_label = topic_label_map[topics[0][0]]
+        topics_doc.append(topics)
+        topic_names.append(topic_label)
 
-# Create a Pandas Excel writer using XlsxWriter as the engine.
-writer = pd.ExcelWriter('new_file_topics.xlsx', engine='xlsxwriter')
-# Convert the dataframe to an XlsxWriter Excel object.
-data.to_excel(writer, sheet_name='Sheet1')
-# Close the Pandas Excel writer and output the Excel file.
-writer.save()
-    
-#Visualize Topics
-data.groupby(['Countries','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
-plt.show()
+    data['Topic_ID_Prob'] = topics_doc
+    data['Topic_Name'] = topic_names
 
-#Plot Sectors
-data.groupby(['Sectors','Topic_Name']).size().unstack().plot(kind='bar',stacked=True)
-plt.show()
+    save_data(data, save_as='new_file_topics.xlsx')
 
-#matplotlib inline
-#import pyLDAvis
-#import pyLDAvis.gensim
-#vis = pyLDAvis.gensim.prepare(topic_model=lda_model, corpus=corpus, dictionary=dictionary_LDA)
-#pyLDAvis.enable_notebook()
-#pyLDAvis.display(vis)
+    # Visualize Topics
+    data.groupby(['Countries', 'Topic_Name']).size().unstack().plot(kind='bar', stacked=True)
+    plt.savefig('Countries.png')
+
+    # Plot Sectors
+    data.groupby(['Sectors', 'Topic_Name']).size().unstack().plot(kind='bar', stacked=True)
+    plt.savefig('Sectors.png')
+
+
+if __name__ == '__main__':
+    filename = '/Users/minaekramnia/Downloads/SampleData_IEGKC_DS_STC_Test.xlsx'
+    main(filename)
