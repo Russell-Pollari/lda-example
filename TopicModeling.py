@@ -9,7 +9,7 @@ Created on Sun Apr 12 13:25:18 2020
 import pandas as pd
 import gensim
 from nltk.stem import WordNetLemmatizer
-from nltk.stem.porter import stemmer
+from nltk.stem.porter import PorterStemmer
 import numpy as np
 import nltk
 from gensim import models
@@ -29,6 +29,7 @@ def load_data(filename):
 
 
 def lemmatize_stemming(text):
+    stemmer = PorterStemmer()
     return stemmer.stem(WordNetLemmatizer().lemmatize(text, pos='v'))
 
 
