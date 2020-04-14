@@ -84,8 +84,8 @@ for doc in bow_corpus:
 data['Topic_ID_Prob']=topics_doc
 
 topic_name=[]
-for i in range(size(data['Topics_ID_Prob'])):
-    topic_name.append(topic_label[data['Topics_ID_Prob'][i][0][0]])
+for i in range(size(data['Topic_ID_Prob'])):
+    topic_name.append(topic_label[data['Topic_ID_Prob'][i][0][0]])
 data['Topic_Name']=topic_name
 
 #Testing model on unseen document
